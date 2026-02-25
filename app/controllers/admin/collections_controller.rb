@@ -25,7 +25,7 @@ class Admin::CollectionsController < ApplicationController
 
     respond_to do |format|
       if @collection.save
-        format.html { redirect_to [:admin, @collection], notice: "Collection was successfully created." }
+        format.html { redirect_to [ :admin, @collection ], notice: "Collection was successfully created." }
         format.json { render :show, status: :created, location: @collection }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +38,7 @@ class Admin::CollectionsController < ApplicationController
   def update
     respond_to do |format|
       if @collection.update(collection_params)
-        format.html { redirect_to [:admin, @collection], notice: "Collection was successfully updated.", status: :see_other }
+        format.html { redirect_to [ :admin, @collection ], notice: "Collection was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @collection }
       else
         format.html { render :edit, status: :unprocessable_entity }

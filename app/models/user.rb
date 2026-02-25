@@ -8,7 +8,7 @@ class User < ApplicationRecord
   has_many :campaigns, dependent: :destroy
 
   # Validations
-  validates :admin, inclusion: { in: [true, false] }
+  validates :admin, inclusion: { in: [ true, false ] }
 
   # Scopes
   scope :admins, -> { where(admin: true) }

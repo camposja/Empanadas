@@ -12,7 +12,7 @@ class CreateCampaigns < ActiveRecord::Migration[8.1]
 
       t.timestamps
     end
-    
+
     add_index :campaigns, :status
     add_index :campaigns, :scheduled_for
   end

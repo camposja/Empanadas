@@ -1,9 +1,9 @@
 FactoryBot.define do
   factory :collection do
-    name { "MyString" }
-    slug { "MyString" }
-    description { "MyText" }
-    active { false }
+    sequence(:name) { |n| "Colección #{n}" }
+    sequence(:slug) { |n| "coleccion-#{n}" }
+    description { "Descripción de la colección" }
+    active { true }
     position { 1 }
   end
 end

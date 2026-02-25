@@ -9,16 +9,16 @@ class Campaign < ApplicationRecord
   validates :status, inclusion: { in: %w[draft scheduled sending sent failed] }
 
   # Scopes
-  scope :draft, -> { where(status: 'draft') }
-  scope :scheduled, -> { where(status: 'scheduled') }
-  scope :sent, -> { where(status: 'sent') }
+  scope :draft, -> { where(status: "draft") }
+  scope :scheduled, -> { where(status: "scheduled") }
+  scope :sent, -> { where(status: "sent") }
 
   # Methods
   def render_message(contact, variables = {})
     msg = message_template.dup
-    msg.gsub!('{{first_name}}', contact.first_name)
-    msg.gsub!('{{last_name}}', contact.last_name || '')
-    msg.gsub!('{{phone_number}}', contact.phone_number)
+    msg.gsub!("{{first_name}}", contact.first_name)
+    msg.gsub!("{{last_name}}", contact.last_name || "")
+    msg.gsub!("{{phone_number}}", contact.phone_number)
     variables.each do |key, value|
       msg.gsub!("{{#{key}}}", value.to_s)
     end
@@ -28,7 +28,7 @@ class Campaign < ApplicationRecord
   def target_contacts
     scope = Contact.contactable
     if segment_tags.present?
-      tags = segment_tags.split(',').map(&:strip)
+      tags = segment_tags.split(",").map(&:strip)
       tags.each do |tag|
         scope = scope.with_tag(tag)
       end
@@ -37,6 +37,6 @@ class Campaign < ApplicationRecord
   end
 
   def ready_to_send?
-    status == 'draft' || status == 'scheduled'
+    status == "draft" || status == "scheduled"
   end
 end

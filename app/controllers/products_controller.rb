@@ -7,7 +7,12 @@ class ProductsController < ApplicationController
 
   def show
     @product = Product.friendly.find(params[:id])
-    @whatsapp_number = ENV['WHATSAPP_NUMBER'] || '+50212345678'
+    @related_products = @product.collection
+                                .products
+                                .active
+                                .where.not(id: @product.id)
+                                .limit(4)
+    @whatsapp_number = ENV.fetch("WHATSAPP_NUMBER", "+50230016011")
     @whatsapp_message = URI.encode_www_form_component(@product.whatsapp_message)
   end
 end

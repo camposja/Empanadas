@@ -1,3 +1,28 @@
+require "open-uri"
+
+# Helper: attach a photo from a remote URL to a product.
+# Gracefully skips if the download fails (e.g. no internet at seed time).
+def attach_photo(product, url, filename)
+  io = URI.open(url, "User-Agent" => "TiendaEmpanadas/1.0") # rubocop:disable Security/Open
+  product.photos.attach(io: io, filename: filename, content_type: "image/jpeg")
+  puts "  ✓ Foto adjuntada a #{product.name}"
+rescue StandardError => e
+  puts "  ⚠ No se pudo adjuntar foto a #{product.name}: #{e.message}"
+end
+
+# Unsplash CDN photos — keyed by product slug.
+# These are public domain-equivalent photos. Fallback gracefully if unreachable.
+PRODUCT_PHOTOS = {
+  "empanada-de-pavo-navideno"      => "https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&h=600&fit=crop&q=80",
+  "empanada-de-manzana-con-canela" => "https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?w=800&h=600&fit=crop&q=80",
+  "empanada-de-pavo-con-arandanos" => "https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&h=600&fit=crop&q=80",
+  "empanada-de-camote-dulce"       => "https://images.unsplash.com/photo-1596797038530-2c107229654b?w=800&h=600&fit=crop&q=80",
+  "empanada-de-carne"              => "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=800&h=600&fit=crop&q=80",
+  "empanada-de-pollo"              => "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800&h=600&fit=crop&q=80",
+  "empanada-de-frijol-con-queso"   => "https://images.unsplash.com/photo-1481931098730-318b6f776db0?w=800&h=600&fit=crop&q=80",
+  "empanada-de-loroco"             => "https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=800&h=600&fit=crop&q=80"
+}.freeze
+
 # Clear existing data
 puts "Clearing existing data..."
 Message.destroy_all
@@ -130,6 +155,15 @@ Product.create!([
 ])
 
 puts "✓ Created #{Product.count} products"
+
+# Attach photos from Unsplash
+puts "\nAttaching product photos (requires internet)..."
+Product.all.each do |product|
+  url = PRODUCT_PHOTOS[product.slug]
+  next unless url
+
+  attach_photo(product, url, "#{product.slug}.jpg")
+end
 
 # Create contacts
 puts "\nCreating sample contacts..."

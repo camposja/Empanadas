@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "admin/campaigns/edit", type: :view do
   let(:campaign) {
-    Campaign.create!()
+    create(:campaign)
   }
 
   before(:each) do

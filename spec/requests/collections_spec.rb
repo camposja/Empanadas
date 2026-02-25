@@ -1,11 +1,11 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe "Collections", type: :request do
-  describe "GET /show" do
+  describe "GET /collections/:id" do
     it "returns http success" do
-      get "/collections/show"
+      collection = create(:collection)
+      get collection_path(collection)
       expect(response).to have_http_status(:success)
     end
   end
-
 end

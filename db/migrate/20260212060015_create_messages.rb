@@ -13,7 +13,7 @@ class CreateMessages < ActiveRecord::Migration[8.1]
 
       t.timestamps
     end
-    
+
     add_index :messages, :status
     add_index :messages, :sent_at
   end

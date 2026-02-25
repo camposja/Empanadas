@@ -25,7 +25,7 @@ class Admin::CampaignsController < ApplicationController
 
     respond_to do |format|
       if @campaign.save
-        format.html { redirect_to [:admin, @campaign], notice: "Campaign was successfully created." }
+        format.html { redirect_to [ :admin, @campaign ], notice: "Campaign was successfully created." }
         format.json { render :show, status: :created, location: @campaign }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +38,7 @@ class Admin::CampaignsController < ApplicationController
   def update
     respond_to do |format|
       if @campaign.update(campaign_params)
-        format.html { redirect_to [:admin, @campaign], notice: "Campaign was successfully updated.", status: :see_other }
+        format.html { redirect_to [ :admin, @campaign ], notice: "Campaign was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @campaign }
       else
         format.html { render :edit, status: :unprocessable_entity }

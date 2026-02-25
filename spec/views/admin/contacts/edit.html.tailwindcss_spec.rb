@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "admin/contacts/edit", type: :view do
   let(:contact) {
-    Contact.create!()
+    create(:contact)
   }
 
   before(:each) do

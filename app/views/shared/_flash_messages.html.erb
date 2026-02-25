@@ -1,0 +1,31 @@
+<% flash.each do |type, message| %>
+  <%
+    color_classes = case type.to_s
+                    when "notice", "success" then "bg-green-50 border-green-200 text-green-800"
+                    when "alert", "error"    then "bg-red-50 border-red-200 text-red-800"
+                    when "warning"           then "bg-amber-50 border-amber-200 text-amber-800"
+                    else                          "bg-blue-50 border-blue-200 text-blue-800"
+                    end
+    icon = case type.to_s
+           when "notice", "success" then "✓"
+           when "alert", "error"    then "✕"
+           when "warning"           then "⚠"
+           else                          "ℹ"
+           end
+  %>
+  <div class="border-l-4 <%= color_classes %> px-4 py-3 flex items-start gap-3 text-sm"
+       role="alert"
+       data-controller="flash"
+       data-action="animationend->flash#remove">
+    <span class="font-bold mt-0.5 flex-shrink-0" aria-hidden="true"><%= icon %></span>
+    <span class="flex-1"><%= message %></span>
+    <button type="button"
+            class="flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity ml-2"
+            aria-label="Cerrar"
+            data-action="flash#remove">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+<% end %>

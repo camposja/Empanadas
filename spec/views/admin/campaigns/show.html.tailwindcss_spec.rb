@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "admin/campaigns/show", type: :view do
   before(:each) do
-    assign(:campaign, Campaign.create!())
+    assign(:campaign, create(:campaign))
   end
 
   it "renders attributes in <p>" do

@@ -1,0 +1,66 @@
+<%# Locals: product (required) %>
+<article class="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col">
+  <%= link_to product_path(product), class: "block flex-1 flex flex-col" do %>
+    <%# Product image %>
+    <div class="relative overflow-hidden aspect-[4/3] bg-primary-50">
+      <% if product.photos.attached? %>
+        <%= image_tag product.photos.first.variant(resize_to_fill: [400, 300]),
+            alt: product.name,
+            class: "w-full h-full object-cover group-hover:scale-105 transition-transform duration-500",
+            loading: "lazy" %>
+      <% else %>
+        <%# Gradient placeholder %>
+        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-cream-200">
+          <span class="text-6xl opacity-70" aria-hidden="true">🫓</span>
+        </div>
+      <% end %>
+
+      <%# Badges overlay %>
+      <div class="absolute top-3 left-3 flex flex-col gap-1.5">
+        <% if product.featured? %>
+          <span class="inline-flex items-center gap-1 bg-amber-500 text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm">
+            ★ Destacado
+          </span>
+        <% end %>
+        <% if product.seasonal? %>
+          <span class="inline-flex items-center gap-1 bg-emerald-600 text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm">
+            🍂 Temporada
+          </span>
+        <% end %>
+      </div>
+    </div>
+
+    <%# Card body %>
+    <div class="p-4 flex flex-col flex-1">
+      <% if product.collection %>
+        <span class="text-xs font-semibold uppercase tracking-widest text-primary-500 mb-1">
+          <%= product.collection.name %>
+        </span>
+      <% end %>
+
+      <h3 class="font-display font-bold text-gray-900 text-base leading-snug mb-2 line-clamp-2 group-hover:text-primary-700 transition-colors">
+        <%= product.name %>
+      </h3>
+
+      <% if product.description.present? %>
+        <p class="text-gray-500 text-sm leading-relaxed line-clamp-2 flex-1 mb-3">
+          <%= product.description %>
+        </p>
+      <% else %>
+        <div class="flex-1"></div>
+      <% end %>
+
+      <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-50">
+        <span class="text-primary-600 font-bold text-lg">
+          <%= format_price(product.price) %>
+        </span>
+        <span class="text-primary-500 text-sm font-medium group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+          Ver más
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </span>
+      </div>
+    </div>
+  <% end %>
+</article>

@@ -14,7 +14,7 @@ class Contact < ApplicationRecord
 
   # Methods
   def full_name
-    [first_name, last_name].compact.join(" ")
+    [ first_name, last_name ].compact.join(" ")
   end
 
   def can_contact?
@@ -30,11 +30,11 @@ class Contact < ApplicationRecord
   end
 
   def self.to_csv
-    require 'csv'
+    require "csv"
     CSV.generate(headers: true) do |csv|
-      csv << ['First Name', 'Last Name', 'Phone Number', 'Preferred Channel', 'Opt-in Status', 'Tags', 'Notes']
+      csv << [ "First Name", "Last Name", "Phone Number", "Preferred Channel", "Opt-in Status", "Tags", "Notes" ]
       all.each do |contact|
-        csv << [contact.first_name, contact.last_name, contact.phone_number, contact.preferred_channel, contact.opt_in_status, contact.tags, contact.notes]
+        csv << [ contact.first_name, contact.last_name, contact.phone_number, contact.preferred_channel, contact.opt_in_status, contact.tags, contact.notes ]
       end
     end
   end

@@ -1,12 +1,12 @@
 FactoryBot.define do
   factory :product do
-    name { "MyString" }
-    slug { "MyString" }
-    description { "MyText" }
+    sequence(:name) { |n| "Empanada #{n}" }
+    sequence(:slug) { |n| "empanada-#{n}" }
+    description { "Deliciosa empanada artesanal guatemalteca" }
     price { "9.99" }
     featured { false }
     seasonal { false }
-    active { false }
-    collection { nil }
+    active { true }
+    association :collection
   end
 end

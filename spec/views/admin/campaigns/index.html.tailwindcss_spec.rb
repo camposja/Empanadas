@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe "admin/campaigns/index", type: :view do
   before(:each) do
     assign(:campaigns, [
-      Campaign.create!(),
-      Campaign.create!()
+      create(:campaign),
+      create(:campaign)
     ])
   end
 

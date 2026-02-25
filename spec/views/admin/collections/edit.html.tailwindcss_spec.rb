@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "admin/collections/edit", type: :view do
   let(:collection) {
-    Collection.create!()
+    create(:collection)
   }
 
   before(:each) do

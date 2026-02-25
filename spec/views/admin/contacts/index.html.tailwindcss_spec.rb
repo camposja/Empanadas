@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe "admin/contacts/index", type: :view do
   before(:each) do
     assign(:contacts, [
-      Contact.create!(),
-      Contact.create!()
+      create(:contact),
+      create(:contact)
     ])
   end
 

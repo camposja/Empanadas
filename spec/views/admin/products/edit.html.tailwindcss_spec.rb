@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "admin/products/edit", type: :view do
   let(:product) {
-    Product.create!()
+    create(:product)
   }
 
   before(:each) do

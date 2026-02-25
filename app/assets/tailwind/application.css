@@ -1,1 +1,58 @@
 @import "tailwindcss";
+
+@theme {
+  /* Terra cotta / burnt orange primary palette */
+  --color-primary-50: #FFF3EE;
+  --color-primary-100: #FFE0D0;
+  --color-primary-200: #FFC0A0;
+  --color-primary-300: #FF9A6C;
+  --color-primary-400: #E05520;
+  --color-primary-500: #C0390F;
+  --color-primary-600: #9A2C08;
+  --color-primary-700: #741E04;
+  --color-primary-800: #521500;
+  --color-primary-900: #3D0B00;
+  --color-primary-950: #200500;
+
+  /* Warm cream neutrals */
+  --color-cream-50: #FFFBF5;
+  --color-cream-100: #FEF3E2;
+  --color-cream-200: #FDE8C8;
+  --color-cream-300: #FBDAAA;
+
+  /* WhatsApp brand green */
+  --color-whatsapp: #25D366;
+  --color-whatsapp-dark: #1DA851;
+
+  /* Typography */
+  --font-family-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-display: Georgia, "Times New Roman", serif;
+}
+
+/* Utility: multi-line text clamp */
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+/* Smooth scroll for the whole page */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus ring for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
