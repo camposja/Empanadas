@@ -1,10 +1,16 @@
-<% content_for :title, "Editing collection" %>
+<% content_for :title, "Editar — #{@collection.name}" %>
 
-<div class="md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">Editing collection</h1>
+<div class="max-w-2xl">
+  <div class="mb-6">
+    <nav class="mb-1 text-sm text-gray-500" aria-label="Breadcrumb">
+      <%= link_to "Colecciones", admin_collections_path, class: "transition-colors hover:text-primary-600" %>
+      <span class="mx-1.5" aria-hidden="true">›</span>
+      <%= link_to @collection.name, [:admin, @collection], class: "transition-colors hover:text-primary-600" %>
+      <span class="mx-1.5" aria-hidden="true">›</span>
+      <span class="text-gray-900">Editar</span>
+    </nav>
+    <h1 class="text-2xl font-bold text-gray-900">Editar colección</h1>
+  </div>
 
-  <%= render "form", collection: @collection %>
-
-  <%= link_to "Show this collection", [:admin, @collection], class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= link_to "Back to collections", admin_collections_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+  <%= render "form", collection: @collection, cancel_path: [:admin, @collection] %>
 </div>

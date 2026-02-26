@@ -13,6 +13,8 @@ require 'rails_helper'
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
 RSpec.describe "/campaigns", type: :request do
+  before { sign_in create(:user, :admin) }
+
   # This should return the minimal set of attributes required to create a valid
   # Campaign. As you add validations to Campaign, be sure to
   # adjust the attributes here as well.

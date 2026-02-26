@@ -7,6 +7,7 @@ RSpec.describe "admin/products/edit", type: :view do
 
   before(:each) do
     assign(:product, product)
+    assign(:collections, Collection.none)
   end
 
   it "renders the edit admin_product form" do

@@ -1,70 +1,56 @@
-class Admin::ProductsController < ApplicationController
-  before_action :set_product, only: %i[ show edit update destroy ]
+class Admin::ProductsController < Admin::BaseController
+  before_action :set_product, only: %i[show edit update destroy]
+  before_action :set_collections, only: %i[new edit create update]
 
-  # GET /admin/products or /admin/products.json
   def index
-    @products = Product.all
+    @products = Product.includes(:collection).order(created_at: :desc)
   end
 
-  # GET /admin/products/1 or /admin/products/1.json
-  def show
-  end
+  def show; end
 
-  # GET /admin/products/new
   def new
     @product = Product.new
   end
 
-  # GET /admin/products/1/edit
-  def edit
-  end
+  def edit; end
 
-  # POST /admin/products or /admin/products.json
   def create
     @product = Product.new(product_params)
-
-    respond_to do |format|
-      if @product.save
-        format.html { redirect_to [ :admin, @product ], notice: "Product was successfully created." }
-        format.json { render :show, status: :created, location: @product }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @product.errors, status: :unprocessable_entity }
-      end
+    if @product.save
+      redirect_to [ :admin, @product ], notice: "Producto creado exitosamente."
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /admin/products/1 or /admin/products/1.json
   def update
-    respond_to do |format|
-      if @product.update(product_params)
-        format.html { redirect_to [ :admin, @product ], notice: "Product was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @product }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @product.errors, status: :unprocessable_entity }
-      end
+    if @product.update(product_params)
+      redirect_to [ :admin, @product ], notice: "Producto actualizado exitosamente.", status: :see_other
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
-  # DELETE /admin/products/1 or /admin/products/1.json
   def destroy
     @product.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to admin_products_path, notice: "Product was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    redirect_to admin_products_path, notice: "Producto eliminado exitosamente.", status: :see_other
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_product
-      @product = Product.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def product_params
-      params.fetch(:product, {})
-    end
+  def set_product
+    @product = Product.find(params[:id])
+  end
+
+  def set_collections
+    @collections = Collection.order(position: :asc, name: :asc)
+  end
+
+  def product_params
+    params.require(:product).permit(
+      :name, :description, :price, :collection_id,
+      :active, :featured, :seasonal,
+      photos: []
+    )
+  end
 end

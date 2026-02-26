@@ -1,2 +1,16 @@
-<div id="<%= dom_id product %>" class="w-full sm:w-auto my-5 space-y-5">
+<div id="<%= dom_id product %>" class="flex items-center gap-3">
+  <%# Thumbnail %>
+  <div class="h-10 w-10 shrink-0 overflow-hidden rounded-md bg-primary-50">
+    <% if product.photos.attached? %>
+      <%= image_tag product.photos.first.variant(resize_to_fill: [40, 40]),
+            class: "h-full w-full object-cover", alt: product.name %>
+    <% else %>
+      <span class="flex h-full w-full items-center justify-center text-lg">🫓</span>
+    <% end %>
+  </div>
+  <%# Info %>
+  <div>
+    <p class="text-sm font-medium text-gray-900"><%= product.name %></p>
+    <p class="text-xs text-gray-500"><%= product.collection&.name %></p>
+  </div>
 </div>

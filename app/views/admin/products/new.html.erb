@@ -1,9 +1,14 @@
-<% content_for :title, "New product" %>
+<% content_for :title, "Nuevo producto" %>
 
-<div class="md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">New product</h1>
+<div class="max-w-2xl">
+  <div class="mb-6">
+    <nav class="mb-1 text-sm text-gray-500" aria-label="Breadcrumb">
+      <%= link_to "Productos", admin_products_path, class: "transition-colors hover:text-primary-600" %>
+      <span class="mx-1.5" aria-hidden="true">›</span>
+      <span class="text-gray-900">Nuevo producto</span>
+    </nav>
+    <h1 class="text-2xl font-bold text-gray-900">Nuevo producto</h1>
+  </div>
 
-  <%= render "form", product: @product %>
-
-  <%= link_to "Back to products", admin_products_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+  <%= render "form", product: @product, cancel_path: admin_products_path %>
 </div>

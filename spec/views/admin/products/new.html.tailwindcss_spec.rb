@@ -2,7 +2,8 @@ require 'rails_helper'
 
 RSpec.describe "admin/products/new", type: :view do
   before(:each) do
-    assign(:product, Product.new())
+    assign(:product, Product.new)
+    assign(:collections, Collection.none)
   end
 
   it "renders new admin_product form" do
