@@ -1,29 +1,99 @@
-<% content_for :title, "Contacts" %>
+<% content_for :title, "Contactos" %>
 
-<div class="w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
-
-  <div class="flex justify-between items-center">
-    <h1 class="font-bold text-4xl">Contacts</h1>
-    <%= link_to "New contact", new_admin_contact_path, class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white block font-medium" %>
-  </div>
-
-  <div id="contacts" class="min-w-full divide-y divide-gray-200 space-y-5">
-    <% if @contacts.any? %>
-      <% @contacts.each do |contact| %>
-        <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0">
-          <%= render "admin/contacts/contact", contact: contact %>
-          <div class="w-full sm:w-auto flex flex-col sm:flex-row space-x-2 space-y-2">
-            <%= link_to "Show", [:admin, contact], class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-            <%= link_to "Edit", edit_admin_contact_path(contact), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-            <%= button_to "Destroy", [:admin, contact], method: :delete, class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
-          </div>
-        </div>
-      <% end %>
-    <% else %>
-      <p class="text-center my-10">No contacts found.</p>
+<div>
+  <%# Header %>
+  <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Contactos</h1>
+      <p class="mt-1 text-sm text-gray-500">
+        <%= @contacts.count %> contacto<%= @contacts.count == 1 ? "" : "s" %> registrado<%= @contacts.count == 1 ? "" : "s" %>
+      </p>
+    </div>
+    <%= link_to new_admin_contact_path,
+          class: "inline-flex items-center gap-1.5 rounded-lg bg-primary-500 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary-600 self-start" do %>
+      <span aria-hidden="true">+</span> Nuevo contacto
     <% end %>
   </div>
+
+  <% if @contacts.any? %>
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Nombre</th>
+              <th scope="col" class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Teléfono</th>
+              <th scope="col" class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Canal</th>
+              <th scope="col" class="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">Opt-in</th>
+              <th scope="col" class="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">No Contactar</th>
+              <th scope="col" class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Registrado</th>
+              <th scope="col" class="relative px-5 py-3"><span class="sr-only">Acciones</span></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 bg-white">
+            <% @contacts.each do |contact| %>
+              <tr class="transition-colors hover:bg-gray-50">
+                <td class="whitespace-nowrap px-5 py-4">
+                  <span class="font-medium text-gray-900 text-sm"><%= contact.full_name %></span>
+                  <% if contact.tags.present? %>
+                    <div class="mt-0.5 flex flex-wrap gap-1">
+                      <% contact.tag_list.first(2).each do |tag| %>
+                        <span class="inline-flex rounded-full bg-primary-50 px-1.5 py-0.5 text-xs font-medium text-primary-700"><%= tag %></span>
+                      <% end %>
+                    </div>
+                  <% end %>
+                </td>
+                <td class="whitespace-nowrap px-5 py-4 font-mono text-sm text-gray-600"><%= contact.phone_number %></td>
+                <td class="whitespace-nowrap px-5 py-4">
+                  <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium
+                    <%= contact.preferred_channel == 'whatsapp' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800' %>">
+                    <%= contact.preferred_channel&.capitalize || "—" %>
+                  </span>
+                </td>
+                <td class="whitespace-nowrap px-5 py-4 text-center">
+                  <% if contact.opt_in_status %>
+                    <span class="inline-flex rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Sí</span>
+                  <% else %>
+                    <span class="inline-flex rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-500">No</span>
+                  <% end %>
+                </td>
+                <td class="whitespace-nowrap px-5 py-4 text-center">
+                  <% if contact.do_not_contact %>
+                    <span class="inline-flex rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">Sí</span>
+                  <% else %>
+                    <span class="inline-flex rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-400">No</span>
+                  <% end %>
+                </td>
+                <td class="whitespace-nowrap px-5 py-4 text-sm text-gray-500">
+                  <%= contact.created_at.strftime("%d/%m/%Y") %>
+                </td>
+                <td class="whitespace-nowrap px-5 py-4">
+                  <div class="flex items-center justify-end gap-2">
+                    <%= link_to "Ver", [:admin, contact],
+                          class: "rounded-md bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 transition-colors hover:bg-gray-50" %>
+                    <%= link_to "Editar", edit_admin_contact_path(contact),
+                          class: "rounded-md bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 transition-colors hover:bg-gray-50" %>
+                    <%= button_to "Eliminar", [:admin, contact],
+                          method: :delete,
+                          class: "rounded-md bg-white px-2.5 py-1.5 text-xs font-medium text-red-600 shadow-sm ring-1 ring-inset ring-red-200 transition-colors hover:bg-red-50 cursor-pointer",
+                          data: { turbo_confirm: "¿Eliminar a #{contact.full_name}? Esta acción no se puede deshacer." } %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% else %>
+    <div class="rounded-xl border-2 border-dashed border-gray-200 bg-white py-16 text-center">
+      <p class="mb-3 text-4xl">📋</p>
+      <h3 class="text-sm font-semibold text-gray-900">No hay contactos</h3>
+      <p class="mt-1 text-sm text-gray-500">Comienza agregando tu primer contacto.</p>
+      <div class="mt-6">
+        <%= link_to "Nuevo contacto", new_admin_contact_path,
+              class: "inline-flex items-center rounded-lg bg-primary-500 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary-600" %>
+      </div>
+    </div>
+  <% end %>
 </div>

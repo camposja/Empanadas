@@ -1,70 +1,50 @@
-class Admin::ContactsController < ApplicationController
-  before_action :set_contact, only: %i[ show edit update destroy ]
+class Admin::ContactsController < Admin::BaseController
+  before_action :set_contact, only: %i[show edit update destroy]
 
-  # GET /admin/contacts or /admin/contacts.json
   def index
-    @contacts = Contact.all
+    @contacts = Contact.all.order(created_at: :desc)
   end
 
-  # GET /admin/contacts/1 or /admin/contacts/1.json
-  def show
-  end
+  def show; end
 
-  # GET /admin/contacts/new
   def new
     @contact = Contact.new
   end
 
-  # GET /admin/contacts/1/edit
-  def edit
-  end
+  def edit; end
 
-  # POST /admin/contacts or /admin/contacts.json
   def create
     @contact = Contact.new(contact_params)
-
-    respond_to do |format|
-      if @contact.save
-        format.html { redirect_to [ :admin, @contact ], notice: "Contact was successfully created." }
-        format.json { render :show, status: :created, location: @contact }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @contact.errors, status: :unprocessable_entity }
-      end
+    if @contact.save
+      redirect_to [ :admin, @contact ], notice: "Contacto creado exitosamente."
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /admin/contacts/1 or /admin/contacts/1.json
   def update
-    respond_to do |format|
-      if @contact.update(contact_params)
-        format.html { redirect_to [ :admin, @contact ], notice: "Contact was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @contact }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @contact.errors, status: :unprocessable_entity }
-      end
+    if @contact.update(contact_params)
+      redirect_to [ :admin, @contact ], notice: "Contacto actualizado exitosamente.", status: :see_other
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
-  # DELETE /admin/contacts/1 or /admin/contacts/1.json
   def destroy
     @contact.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to admin_contacts_path, notice: "Contact was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    redirect_to admin_contacts_path, notice: "Contacto eliminado exitosamente.", status: :see_other
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_contact
-      @contact = Contact.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def contact_params
-      params.fetch(:contact, {})
-    end
+  def set_contact
+    @contact = Contact.find(params[:id])
+  end
+
+  def contact_params
+    params.require(:contact).permit(
+      :first_name, :last_name, :phone_number, :preferred_channel,
+      :opt_in_status, :do_not_contact, :tags, :notes, :opt_in_source
+    )
+  end
 end

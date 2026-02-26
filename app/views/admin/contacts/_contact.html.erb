@@ -1,2 +1,11 @@
-<div id="<%= dom_id contact %>" class="w-full sm:w-auto my-5 space-y-5">
+<div id="<%= dom_id contact %>" class="space-y-1">
+  <p class="font-medium text-gray-900 text-sm"><%= contact.full_name %></p>
+  <p class="text-xs text-gray-500 font-mono"><%= contact.phone_number %></p>
+  <% if contact.tags.present? %>
+    <div class="flex flex-wrap gap-1 mt-1">
+      <% contact.tag_list.each do |tag| %>
+        <span class="inline-flex rounded-full bg-primary-50 px-2 py-0.5 text-xs font-medium text-primary-700"><%= tag %></span>
+      <% end %>
+    </div>
+  <% end %>
 </div>

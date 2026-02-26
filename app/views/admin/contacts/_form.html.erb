@@ -1,17 +1,127 @@
-<%= form_with(model: [:admin, contact], class: "contents") do |form| %>
+<%= form_with(model: [:admin, contact], class: "space-y-6") do |form| %>
+  <%# Validation errors %>
   <% if contact.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
-      <h2><%= pluralize(contact.errors.count, "error") %> prohibited this contact from being saved:</h2>
-
-      <ul class="list-disc ml-6">
-        <% contact.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+    <div class="rounded-lg border border-red-200 bg-red-50 p-4">
+      <div class="flex gap-3">
+        <span class="shrink-0 text-red-500">⚠</span>
+        <div>
+          <p class="text-sm font-semibold text-red-800">
+            <%= contact.errors.count == 1 ? "1 error impidió guardar este contacto:" : "#{contact.errors.count} errores impidieron guardar este contacto:" %>
+          </p>
+          <ul class="mt-2 list-disc pl-5 text-sm text-red-700 space-y-1">
+            <% contact.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
     </div>
   <% end %>
 
-  <div class="inline">
-    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+  <%# Personal data %>
+  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div class="border-b border-gray-100 bg-gray-50 px-6 py-4">
+      <h2 class="text-sm font-semibold text-gray-700">Datos personales</h2>
+    </div>
+    <div class="p-6 space-y-5">
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div>
+          <%= form.label :first_name, "Nombre *", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <%= form.text_field :first_name,
+                placeholder: "María",
+                autocomplete: "given-name",
+                class: "block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" %>
+        </div>
+        <div>
+          <%= form.label :last_name, "Apellido", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <%= form.text_field :last_name,
+                placeholder: "García",
+                autocomplete: "family-name",
+                class: "block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" %>
+        </div>
+      </div>
+
+      <div>
+        <%= form.label :phone_number, "Número de teléfono *", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+        <%= form.phone_field :phone_number,
+              placeholder: "+50212345678",
+              autocomplete: "tel",
+              class: "block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 font-mono shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" %>
+        <p class="mt-1.5 text-xs text-gray-500">Formato E.164 requerido (ej: +50212345678)</p>
+      </div>
+
+      <div>
+        <%= form.label :preferred_channel, "Canal preferido", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+        <%= form.select :preferred_channel,
+              [["WhatsApp", "whatsapp"], ["SMS", "sms"]],
+              {},
+              class: "block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" %>
+      </div>
+    </div>
+  </div>
+
+  <%# Preferences %>
+  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div class="border-b border-gray-100 bg-gray-50 px-6 py-4">
+      <h2 class="text-sm font-semibold text-gray-700">Preferencias y estado</h2>
+    </div>
+    <div class="p-6 space-y-4">
+      <div class="flex items-start gap-3">
+        <%= form.check_box :opt_in_status,
+              class: "mt-0.5 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 cursor-pointer" %>
+        <div>
+          <%= form.label :opt_in_status, "Ha dado opt-in para recibir mensajes",
+                class: "text-sm font-medium text-gray-700 cursor-pointer" %>
+          <p class="mt-0.5 text-xs text-gray-500">El contacto autorizó recibir comunicaciones.</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-3">
+        <%= form.check_box :do_not_contact,
+              class: "mt-0.5 h-4 w-4 rounded border-gray-300 text-red-500 focus:ring-red-400 cursor-pointer" %>
+        <div>
+          <%= form.label :do_not_contact, "No contactar",
+                class: "text-sm font-medium text-gray-700 cursor-pointer" %>
+          <p class="mt-0.5 text-xs text-gray-500">Bloquea este contacto de todas las comunicaciones.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# Additional info %>
+  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div class="border-b border-gray-100 bg-gray-50 px-6 py-4">
+      <h2 class="text-sm font-semibold text-gray-700">Información adicional</h2>
+    </div>
+    <div class="p-6 space-y-5">
+      <div>
+        <%= form.label :tags, "Etiquetas", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+        <%= form.text_field :tags,
+              placeholder: "vip, regular, promoción",
+              class: "block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" %>
+        <p class="mt-1.5 text-xs text-gray-500">Separa las etiquetas con comas</p>
+      </div>
+      <div>
+        <%= form.label :opt_in_source, "Fuente de opt-in", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+        <%= form.text_field :opt_in_source,
+              placeholder: "formulario web, evento, referido",
+              class: "block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" %>
+      </div>
+      <div>
+        <%= form.label :notes, "Notas", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+        <%= form.text_area :notes,
+              rows: 4,
+              placeholder: "Información adicional sobre este contacto...",
+              class: "block w-full resize-none rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" %>
+      </div>
+    </div>
+  </div>
+
+  <%# Actions %>
+  <div class="flex items-center justify-between">
+    <%= link_to local_assigns[:cancel_path] || admin_contacts_path,
+          class: "text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors" do %>
+      ← Cancelar
+    <% end %>
+    <%= form.submit class: "inline-flex cursor-pointer items-center rounded-lg bg-primary-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2" %>
   </div>
 <% end %>
