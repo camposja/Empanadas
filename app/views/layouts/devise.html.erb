@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title><%= content_for?(:title) ? "#{yield(:title)} | Tienda Empanadas" : "Tienda Empanadas" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="flex min-h-screen flex-col bg-cream-50 font-sans antialiased">
+    <%# Brand header %>
+    <header class="bg-primary-900 shadow-sm">
+      <div class="flex h-14 items-center justify-center px-4">
+        <%= link_to root_path, class: "text-sm font-bold tracking-wide text-cream-100 hover:text-white transition-colors" do %>
+          🫓 Tienda Empanadas
+        <% end %>
+      </div>
+    </header>
+
+    <%# Flash messages %>
+    <% flash.each do |type, message| %>
+      <% color = type.to_s == "notice" ? "bg-green-50 border-green-200 text-green-800" : "bg-red-50 border-red-200 text-red-800" %>
+      <div class="border-l-4 <%= color %> px-4 py-3 text-sm" role="alert">
+        <%= message %>
+      </div>
+    <% end %>
+
+    <%# Main content — vertically centered %>
+    <main class="flex flex-1 items-center justify-center px-4 py-12">
+      <%= yield %>
+    </main>
+
+    <%# Minimal footer %>
+    <footer class="py-4 text-center text-xs text-gray-400">
+      &copy; <%= Date.current.year %> Tienda Empanadas &mdash;
+      <%= link_to "Volver a la tienda", root_path, class: "hover:text-primary-600 transition-colors" %>
+    </footer>
+  </body>
+</html>
