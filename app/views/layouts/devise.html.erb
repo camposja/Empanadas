@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
-    <title><%= content_for?(:title) ? "#{yield(:title)} | Tienda Empanadas" : "Tienda Empanadas" %></title>
+    <title><%= content_for?(:title) ? "#{yield(:title)} | EmpanadArte" : "EmpanadArte" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
     <%= csrf_meta_tags %>
@@ -16,7 +16,7 @@
     <header class="bg-primary-900 shadow-sm">
       <div class="flex h-14 items-center justify-center px-4">
         <%= link_to root_path, class: "text-sm font-bold tracking-wide text-cream-100 hover:text-white transition-colors" do %>
-          🫓 Tienda Empanadas
+          🥟 EmpanadArte 🖌️
         <% end %>
       </div>
     </header>
@@ -36,7 +36,7 @@
 
     <%# Minimal footer %>
     <footer class="py-4 text-center text-xs text-gray-400">
-      &copy; <%= Date.current.year %> Tienda Empanadas &mdash;
+      &copy; <%= Date.current.year %> EmpanadArte &mdash;
       <%= link_to "Volver a la tienda", root_path, class: "hover:text-primary-600 transition-colors" %>
     </footer>
   </body>

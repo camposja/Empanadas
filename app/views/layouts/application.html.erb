@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
-    <title><%= content_for?(:title) ? "#{yield(:title)} | Tienda Empanadas" : "Tienda Empanadas — Las mejores empanadas de Guatemala" %></title>
+    <title><%= content_for?(:title) ? "#{yield(:title)} | EmpanadArte" : "EmpanadArte — Empanada y comida Artesanal de Guatemala" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Las mejores empanadas artesanales de Guatemala. Pide por WhatsApp y recíbelas en casa." %>">
+    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "EmpanadArte: empanadas y comida artesanal de Guatemala. Pide por WhatsApp y recíbelas en casa. www.empanadarte.store" %>">
 
     <%# Open Graph basics %>
-    <meta property="og:title" content="<%= content_for?(:title) ? "#{yield(:title)} | Tienda Empanadas" : "Tienda Empanadas" %>">
-    <meta property="og:description" content="<%= content_for?(:description) ? yield(:description) : "Las mejores empanadas artesanales de Guatemala." %>">
+    <meta property="og:title" content="<%= content_for?(:title) ? "#{yield(:title)} | EmpanadArte" : "EmpanadArte" %>">
+    <meta property="og:description" content="<%= content_for?(:description) ? yield(:description) : "EmpanadArte: empanadas y comida artesanal de Guatemala." %>">
     <meta property="og:type" content="website">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Tienda Empanadas">
+    <meta name="application-name" content="EmpanadArte">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
