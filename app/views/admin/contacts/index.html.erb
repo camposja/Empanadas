@@ -9,10 +9,31 @@
         <%= @contacts.count %> contacto<%= @contacts.count == 1 ? "" : "s" %> registrado<%= @contacts.count == 1 ? "" : "s" %>
       </p>
     </div>
-    <%= link_to new_admin_contact_path,
-          class: "inline-flex items-center gap-1.5 rounded-lg bg-primary-500 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary-600 self-start" do %>
-      <span aria-hidden="true">+</span> Nuevo contacto
-    <% end %>
+    <div class="flex flex-wrap items-center gap-2 self-start">
+      <%= link_to export_admin_contacts_path(format: :csv),
+            class: "inline-flex items-center gap-1.5 rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 transition-colors hover:bg-gray-50" do %>
+        Exportar CSV
+      <% end %>
+      <%= link_to new_admin_contact_path,
+            class: "inline-flex items-center gap-1.5 rounded-lg bg-primary-500 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary-600" do %>
+        <span aria-hidden="true">+</span> Nuevo contacto
+      <% end %>
+    </div>
+  </div>
+
+  <%# Import form %>
+  <div class="mb-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div class="px-6 py-4">
+      <%= form_with url: import_admin_contacts_path, method: :post, multipart: true, class: "flex flex-col gap-3 sm:flex-row sm:items-end" do |f| %>
+        <div class="flex-1">
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Importar contactos desde CSV</label>
+          <%= f.file_field :file, accept: ".csv",
+                class: "block w-full text-sm text-gray-500 file:mr-3 file:rounded-lg file:border-0 file:bg-primary-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-700 file:cursor-pointer hover:file:bg-primary-100" %>
+          <p class="mt-1 text-xs text-gray-500">Columnas: First Name, Last Name, Phone Number, Preferred Channel, Opt-in Status, Tags, Notes</p>
+        </div>
+        <%= f.submit "Importar", class: "inline-flex cursor-pointer items-center rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 transition-colors hover:bg-gray-50" %>
+      <% end %>
+    </div>
   </div>
 
   <% if @contacts.any? %>

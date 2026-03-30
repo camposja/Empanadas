@@ -36,6 +36,20 @@ class Admin::CampaignsController < Admin::BaseController
     redirect_to admin_campaigns_path, notice: "Campaña eliminada exitosamente.", status: :see_other
   end
 
+  def send_campaign
+    @campaign = Campaign.find(params[:id])
+
+    unless @campaign.ready_to_send?
+      redirect_to [ :admin, @campaign ], alert: "La campaña no está lista para enviar."
+      return
+    end
+
+    SendCampaignJob.perform_later(@campaign.id)
+    @campaign.update!(status: "scheduled")
+
+    redirect_to [ :admin, @campaign ], notice: "Campaña encolada para envío."
+  end
+
   private
 
   def set_campaign

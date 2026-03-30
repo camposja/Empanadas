@@ -35,6 +35,57 @@ class Admin::ContactsController < Admin::BaseController
     redirect_to admin_contacts_path, notice: "Contacto eliminado exitosamente.", status: :see_other
   end
 
+  def export
+    respond_to do |format|
+      format.csv do
+        send_data Contact.all.order(:created_at).to_csv,
+                  filename: "contactos-#{Date.current}.csv",
+                  type: "text/csv"
+      end
+    end
+  end
+
+  def import
+    file = params[:file]
+    unless file.present?
+      redirect_to admin_contacts_path, alert: "Selecciona un archivo CSV para importar."
+      return
+    end
+
+    unless file.content_type == "text/csv" || file.original_filename.end_with?(".csv")
+      redirect_to admin_contacts_path, alert: "El archivo debe ser CSV."
+      return
+    end
+
+    require "csv"
+    imported = 0
+    skipped = 0
+
+    CSV.foreach(file.path, headers: true, encoding: "bom|utf-8") do |row|
+      phone = row["Phone Number"].to_s.strip
+      next if phone.blank?
+
+      contact = Contact.find_or_initialize_by(phone_number: phone)
+      contact.assign_attributes(
+        first_name: row["First Name"].to_s.strip.presence || contact.first_name || "Importado",
+        last_name: row["Last Name"].to_s.strip.presence || contact.last_name,
+        preferred_channel: row["Preferred Channel"].to_s.strip.presence || contact.preferred_channel || "whatsapp",
+        opt_in_status: row["Opt-in Status"].to_s.strip.downcase == "true",
+        tags: row["Tags"].to_s.strip.presence || contact.tags,
+        notes: row["Notes"].to_s.strip.presence || contact.notes
+      )
+
+      if contact.save
+        imported += 1
+      else
+        skipped += 1
+      end
+    end
+
+    redirect_to admin_contacts_path,
+                notice: "Importación completa: #{imported} importado#{"s" if imported != 1}, #{skipped} omitido#{"s" if skipped != 1}."
+  end
+
   private
 
   def set_contact
