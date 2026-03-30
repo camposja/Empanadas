@@ -27,11 +27,18 @@
       <div>
         <%= form.label :name, "Nombre de la campaña *", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
         <%= form.text_field :name,
-              placeholder: "Ej: Promoción Navidad 2025",
+              placeholder: "Ej: Promoción Navidad 2026",
               class: "block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" %>
       </div>
 
       <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div>
+          <%= form.label :campaign_type, "Tipo de campaña", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <%= form.select :campaign_type,
+                [["Única (una sola vez)", "one_off"], ["Recurrente", "recurring"], ["Estacional", "seasonal"], ["Promocional", "promotional"]],
+                {},
+                class: "block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" %>
+        </div>
         <div>
           <%= form.label :status, "Estado", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
           <%= form.select :status,
@@ -39,13 +46,55 @@
                 {},
                 class: "block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" %>
         </div>
+      </div>
+
+      <div class="flex items-start gap-3">
+        <%= form.check_box :active,
+              class: "mt-0.5 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 cursor-pointer" %>
         <div>
-          <%= form.label :scheduled_for, "Programada para", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
-          <%= form.datetime_local_field :scheduled_for,
-                class: "block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" %>
-          <p class="mt-1.5 text-xs text-gray-500">Requerido solo cuando el estado es "Programada".</p>
+          <%= form.label :active, "Campaña activa",
+                class: "text-sm font-medium text-gray-700 cursor-pointer" %>
+          <p class="mt-0.5 text-xs text-gray-500">Las campañas inactivas no se envían automáticamente.</p>
         </div>
       </div>
+
+      <div>
+        <%= form.label :scheduled_for, "Programada para", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+        <%= form.datetime_local_field :scheduled_for,
+              class: "block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" %>
+        <p class="mt-1.5 text-xs text-gray-500">Para campañas únicas: fecha y hora de envío.</p>
+      </div>
+    </div>
+  </div>
+
+  <%# Recurring schedule %>
+  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div class="border-b border-gray-100 bg-gray-50 px-6 py-4">
+      <h2 class="text-sm font-semibold text-gray-700">Programación recurrente</h2>
+    </div>
+    <div class="p-6 space-y-5">
+      <div>
+        <%= form.label :recurring_interval_days, "Enviar cada (días)", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+        <%= form.number_field :recurring_interval_days,
+              min: 1,
+              placeholder: "10",
+              class: "block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" %>
+        <p class="mt-1.5 text-xs text-gray-500">Solo para campañas recurrentes. Ej: 10 = cada 10 días (~3 veces al mes).</p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div>
+          <%= form.label :starts_on, "Fecha de inicio", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <%= form.date_field :starts_on,
+                class: "block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" %>
+        </div>
+        <div>
+          <%= form.label :ends_on, "Fecha de fin", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <%= form.date_field :ends_on,
+                class: "block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" %>
+        </div>
+      </div>
+      <p class="text-xs text-gray-500">Opcional. Limita el período en que la campaña puede enviarse.</p>
     </div>
   </div>
 
@@ -59,7 +108,7 @@
         <%= form.label :message_template, "Plantilla del mensaje *", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
         <%= form.text_area :message_template,
               rows: 6,
-              placeholder: "Hola {{first_name}}! Tenemos novedades para ti en EmpanadArte 🥟",
+              placeholder: "Hola {{first_name}}! Tenemos novedades para ti en EmpanadArte",
               class: "block w-full resize-none rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" %>
       </div>
       <div class="rounded-lg bg-blue-50 border border-blue-100 p-3">

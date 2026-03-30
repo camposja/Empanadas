@@ -33,6 +33,12 @@
         </span>
       </div>
       <div class="flex items-center gap-2">
+        <% if @campaign.ready_to_send? %>
+          <%= button_to "Enviar ahora", send_campaign_admin_campaign_path(@campaign),
+                method: :post,
+                class: "inline-flex cursor-pointer items-center rounded-lg bg-green-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-green-700",
+                data: { turbo_confirm: "¿Enviar la campaña \"#{@campaign.name}\" a #{@campaign.target_contacts.count} contacto(s)?" } %>
+        <% end %>
         <%= link_to "Editar", edit_admin_campaign_path(@campaign),
               class: "inline-flex items-center rounded-lg bg-primary-500 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary-600" %>
         <%= button_to "Eliminar", [:admin, @campaign],
@@ -79,6 +85,19 @@
     </div>
     <dl class="divide-y divide-gray-100">
       <div class="grid grid-cols-3 gap-4 px-6 py-4">
+        <dt class="text-sm font-medium text-gray-500">Tipo</dt>
+        <dd class="col-span-2">
+          <span class="inline-flex rounded-full bg-purple-50 px-2.5 py-0.5 text-xs font-medium text-purple-700">
+            <%= @campaign.type_label %>
+          </span>
+          <% if @campaign.active? %>
+            <span class="ml-1 inline-flex rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">Activa</span>
+          <% else %>
+            <span class="ml-1 inline-flex rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500">Inactiva</span>
+          <% end %>
+        </dd>
+      </div>
+      <div class="grid grid-cols-3 gap-4 px-6 py-4">
         <dt class="text-sm font-medium text-gray-500">Estado</dt>
         <dd class="col-span-2">
           <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium <%= status_classes[@campaign.status] %>">
@@ -86,6 +105,28 @@
           </span>
         </dd>
       </div>
+      <% if @campaign.recurring? %>
+        <div class="grid grid-cols-3 gap-4 px-6 py-4">
+          <dt class="text-sm font-medium text-gray-500">Frecuencia</dt>
+          <dd class="col-span-2 text-sm text-gray-900">
+            Cada <%= @campaign.recurring_interval_days %> día<%= @campaign.recurring_interval_days == 1 ? "" : "s" %>
+          </dd>
+        </div>
+        <div class="grid grid-cols-3 gap-4 px-6 py-4">
+          <dt class="text-sm font-medium text-gray-500">Último envío</dt>
+          <dd class="col-span-2 text-sm text-gray-900">
+            <%= @campaign.last_sent_at ? @campaign.last_sent_at.strftime("%d/%m/%Y a las %H:%M") : "Nunca" %>
+          </dd>
+        </div>
+      <% end %>
+      <% if @campaign.starts_on.present? || @campaign.ends_on.present? %>
+        <div class="grid grid-cols-3 gap-4 px-6 py-4">
+          <dt class="text-sm font-medium text-gray-500">Período</dt>
+          <dd class="col-span-2 text-sm text-gray-900">
+            <%= @campaign.starts_on&.strftime("%d/%m/%Y") || "—" %> → <%= @campaign.ends_on&.strftime("%d/%m/%Y") || "sin fin" %>
+          </dd>
+        </div>
+      <% end %>
       <div class="grid grid-cols-3 gap-4 px-6 py-4">
         <dt class="text-sm font-medium text-gray-500">Programada para</dt>
         <dd class="col-span-2 text-sm text-gray-900">

@@ -1,4 +1,6 @@
 class Campaign < ApplicationRecord
+  CAMPAIGN_TYPES = %w[one_off recurring seasonal promotional].freeze
+
   # Associations
   belongs_to :user
   has_many :messages, dependent: :destroy
@@ -7,11 +9,24 @@ class Campaign < ApplicationRecord
   validates :name, presence: true
   validates :message_template, presence: true
   validates :status, inclusion: { in: %w[draft scheduled sending sent failed] }
+  validates :campaign_type, inclusion: { in: CAMPAIGN_TYPES }
+  validates :recurring_interval_days, numericality: { greater_than: 0 }, allow_nil: true
 
   # Scopes
   scope :draft, -> { where(status: "draft") }
   scope :scheduled, -> { where(status: "scheduled") }
   scope :sent, -> { where(status: "sent") }
+  scope :active, -> { where(active: true) }
+  scope :recurring, -> { where(campaign_type: "recurring") }
+  scope :due_for_send, -> {
+    recurring.active.where(status: %w[draft sent]).where(
+      "last_sent_at IS NULL OR last_sent_at <= ?", Time.current
+    ).where(
+      "starts_on IS NULL OR starts_on <= ?", Date.current
+    ).where(
+      "ends_on IS NULL OR ends_on >= ?", Date.current
+    )
+  }
 
   # Methods
   def render_message(contact, variables = {})
@@ -38,5 +53,23 @@ class Campaign < ApplicationRecord
 
   def ready_to_send?
     status == "draft" || status == "scheduled"
+  end
+
+  def recurring?
+    campaign_type == "recurring"
+  end
+
+  def due_for_recurring_send?
+    return false unless recurring? && active?
+    return false if ends_on.present? && ends_on < Date.current
+    return false if starts_on.present? && starts_on > Date.current
+    return true if last_sent_at.nil?
+
+    last_sent_at + recurring_interval_days.days <= Time.current
+  end
+
+  def type_label
+    { "one_off" => "Única", "recurring" => "Recurrente",
+      "seasonal" => "Estacional", "promotional" => "Promocional" }[campaign_type] || campaign_type
   end
 end

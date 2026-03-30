@@ -58,7 +58,8 @@ class Admin::CampaignsController < Admin::BaseController
 
   def campaign_params
     params.require(:campaign).permit(
-      :name, :message_template, :status, :scheduled_for, :segment_tags
+      :name, :message_template, :status, :scheduled_for, :segment_tags,
+      :campaign_type, :active, :recurring_interval_days, :starts_on, :ends_on
     )
   end
 end

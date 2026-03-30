@@ -296,17 +296,44 @@ Contact.create!([
 
 puts "✓ Created #{Contact.count} contacts"
 
-# Create a sample campaign
-puts "\nCreating sample campaign..."
-campaign = Campaign.create!(
-  name: 'Promoción Navideña 2026',
-  message_template: 'Hola {{first_name}}! 🎄 Tenemos empanadas especiales para Navidad. Ordena ahora!',
-  segment_tags: 'navidad',
+# Create sample campaigns (one of each type)
+puts "\nCreating sample campaigns..."
+
+Campaign.create!(
+  name: 'Empanadas de la semana (sample/ejemplo)',
+  message_template: 'Hola {{first_name}}! Esta semana tenemos empanadas frescas listas para ti. Escríbenos para hacer tu pedido!',
   user: admin,
-  status: 'draft'
+  status: 'draft',
+  campaign_type: 'recurring',
+  active: true,
+  recurring_interval_days: 10,
+  starts_on: Date.current
 )
 
-puts "✓ Created sample campaign: #{campaign.name}"
+Campaign.create!(
+  name: 'Promoción Navideña 2026 (sample/ejemplo)',
+  message_template: 'Hola {{first_name}}! Tenemos empanadas especiales para Navidad. Ordena ahora!',
+  segment_tags: 'navidad',
+  user: admin,
+  status: 'draft',
+  campaign_type: 'seasonal',
+  active: true,
+  starts_on: Date.new(2026, 12, 1),
+  ends_on: Date.new(2026, 12, 25)
+)
+
+Campaign.create!(
+  name: '2x1 en empanadas dulces (sample/ejemplo)',
+  message_template: 'Hola {{first_name}}! Solo esta semana: 2x1 en todas las empanadas dulces. No te lo pierdas!',
+  user: admin,
+  status: 'draft',
+  campaign_type: 'promotional',
+  active: true,
+  starts_on: Date.current,
+  ends_on: Date.current + 7.days
+)
+
+puts "✓ Created #{Campaign.count} sample campaigns"
 
 puts "\n" + "="*50
 puts "✅ SEEDS COMPLETED!"

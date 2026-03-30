@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_25_183936) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_30_202955) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -40,13 +40,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_183936) do
   end
 
   create_table "campaigns", force: :cascade do |t|
+    t.boolean "active"
+    t.string "campaign_type"
     t.datetime "created_at", null: false
+    t.date "ends_on"
     t.integer "failed_count", default: 0
+    t.datetime "last_sent_at"
     t.text "message_template", null: false
     t.string "name", null: false
+    t.integer "recurring_interval_days"
     t.datetime "scheduled_for"
     t.string "segment_tags"
     t.integer "sent_count", default: 0
+    t.date "starts_on"
     t.string "status", default: "draft", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
