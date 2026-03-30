@@ -3,18 +3,25 @@ class SendCampaignJob < ApplicationJob
 
   def perform(campaign_id)
     campaign = Campaign.find(campaign_id)
-    campaign.update(status: "sending")
 
-    MessagingService.new.send_campaign(campaign)
+    # Don't run if already sending (prevents double-execution)
+    return if campaign.status == "sending"
 
-    sent = campaign.messages.sent.count
-    failed = campaign.messages.failed.count
+    campaign.update!(status: "sending")
 
-    campaign.update(
+    created = MessagingService.new.send_campaign(campaign)
+
+    campaign.update!(
       status: "sent",
-      sent_count: (campaign.sent_count || 0) + sent,
-      failed_count: (campaign.failed_count || 0) + failed,
+      sent_count: campaign.messages.where(status: %w[sent delivered]).count,
+      failed_count: campaign.messages.failed.count,
       last_sent_at: Time.current
+    )
+
+    Rails.logger.info(
+      "[SendCampaignJob] Campaign ##{campaign.id} '#{campaign.name}' — " \
+      "#{created} messages created this run, " \
+      "#{campaign.sent_count} total sent, #{campaign.failed_count} total failed"
     )
   end
 end

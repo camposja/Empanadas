@@ -10,11 +10,15 @@ class MessagingService
     @twilio_sms_number = ENV["TWILIO_SMS_NUMBER"]
   end
 
+  # Creates Message records for each target contact and enqueues them.
+  # Returns the count of messages created.
   def send_campaign(campaign)
     contacts = campaign.target_contacts
+    created = 0
 
     contacts.find_each do |contact|
       next unless contact.can_contact?
+      next if already_messaged_this_run?(campaign, contact)
 
       message = Message.create!(
         contact: contact,
@@ -25,10 +29,16 @@ class MessagingService
       )
 
       SendMessageJob.perform_later(message.id)
+      created += 1
     end
+
+    created
   end
 
   def send_message(message)
+    # Idempotency: skip if already sent/delivered
+    return if %w[sent delivered].include?(message.status)
+
     unless within_sending_window?
       reschedule_for_next_window(message)
       return
@@ -62,6 +72,19 @@ class MessagingService
   end
 
   private
+
+  # Prevent duplicate messages within the same campaign run.
+  # For recurring: don't re-message contacts messaged since last_sent_at.
+  # For one-off: don't message contacts who already have a non-failed message.
+  def already_messaged_this_run?(campaign, contact)
+    scope = campaign.messages.where(contact: contact)
+
+    if campaign.recurring? && campaign.last_sent_at.present?
+      scope.where("created_at > ?", campaign.last_sent_at).exists?
+    else
+      scope.where.not(status: "failed").exists?
+    end
+  end
 
   def twilio_configured?
     @twilio_sid.present? && @twilio_auth_token.present?

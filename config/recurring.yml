@@ -17,3 +17,7 @@ production:
     class: ProcessRecurringCampaignsJob
     queue: default
     schedule: every day at 9am
+  process_scheduled_campaigns:
+    class: ProcessScheduledCampaignsJob
+    queue: default
+    schedule: every 15 minutes

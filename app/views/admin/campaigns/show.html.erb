@@ -118,6 +118,19 @@
             <%= @campaign.last_sent_at ? @campaign.last_sent_at.strftime("%d/%m/%Y a las %H:%M") : "Nunca" %>
           </dd>
         </div>
+        <% if @campaign.next_recurring_send_at %>
+          <div class="grid grid-cols-3 gap-4 px-6 py-4">
+            <dt class="text-sm font-medium text-gray-500">Próximo envío</dt>
+            <dd class="col-span-2 text-sm text-gray-900">
+              <% next_at = @campaign.next_recurring_send_at %>
+              <% if next_at <= Time.current %>
+                <span class="text-green-700 font-medium">Pendiente (se enviará en el próximo ciclo)</span>
+              <% else %>
+                <%= next_at.strftime("%d/%m/%Y") %>
+              <% end %>
+            </dd>
+          </div>
+        <% end %>
       <% end %>
       <% if @campaign.starts_on.present? || @campaign.ends_on.present? %>
         <div class="grid grid-cols-3 gap-4 px-6 py-4">

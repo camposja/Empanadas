@@ -20,8 +20,6 @@ class Campaign < ApplicationRecord
   scope :recurring, -> { where(campaign_type: "recurring") }
   scope :due_for_send, -> {
     recurring.active.where(status: %w[draft sent]).where(
-      "last_sent_at IS NULL OR last_sent_at <= ?", Time.current
-    ).where(
       "starts_on IS NULL OR starts_on <= ?", Date.current
     ).where(
       "ends_on IS NULL OR ends_on >= ?", Date.current
@@ -52,7 +50,7 @@ class Campaign < ApplicationRecord
   end
 
   def ready_to_send?
-    status == "draft" || status == "scheduled"
+    %w[draft scheduled sent].include?(status) && active? && status != "sending"
   end
 
   def recurring?
@@ -66,6 +64,13 @@ class Campaign < ApplicationRecord
     return true if last_sent_at.nil?
 
     last_sent_at + recurring_interval_days.days <= Time.current
+  end
+
+  def next_recurring_send_at
+    return nil unless recurring? && active? && recurring_interval_days.present?
+    return starts_on&.to_time || Time.current if last_sent_at.nil?
+
+    last_sent_at + recurring_interval_days.days
   end
 
   def type_label
