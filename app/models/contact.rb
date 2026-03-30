@@ -12,6 +12,9 @@ class Contact < ApplicationRecord
   scope :contactable, -> { where(do_not_contact: false, opt_in_status: true) }
   scope :with_tag, ->(tag) { where("tags LIKE ?", "%#{tag}%") }
 
+  # Constants
+  CONSECUTIVE_FAILURES_THRESHOLD = 3
+
   # Methods
   def full_name
     [ first_name, last_name ].compact.join(" ")
@@ -19,6 +22,22 @@ class Contact < ApplicationRecord
 
   def can_contact?
     opt_in_status && !do_not_contact
+  end
+
+  # Called when contact sends STOP or unsubscribes
+  def unsubscribe!
+    update!(opt_in_status: false, do_not_contact: true)
+    Rails.logger.info("[Contact] ##{id} #{phone_number} unsubscribed (do_not_contact set)")
+  end
+
+  # Auto-block contacts with too many consecutive delivery failures
+  def check_consecutive_failures!
+    recent = messages.order(created_at: :desc).limit(CONSECUTIVE_FAILURES_THRESHOLD)
+    return if recent.count < CONSECUTIVE_FAILURES_THRESHOLD
+    return unless recent.all? { |m| m.status == "failed" }
+
+    update!(do_not_contact: true)
+    Rails.logger.warn("[Contact] ##{id} #{phone_number} auto-blocked after #{CONSECUTIVE_FAILURES_THRESHOLD} consecutive failures")
   end
 
   def tag_list

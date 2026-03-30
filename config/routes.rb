@@ -31,6 +31,7 @@ Rails.application.routes.draw do
   # Twilio webhooks
   namespace :webhooks do
     post "twilio/status", to: "twilio#status"
+    post "twilio/inbound", to: "twilio#inbound"
   end
 
   # SEO routes

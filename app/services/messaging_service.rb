@@ -1,7 +1,7 @@
 class MessagingService
   GUATEMALA_TZ = "America/Guatemala"
-  QUIET_HOURS_START = 7  # 7 AM
-  QUIET_HOURS_END = 16   # 4 PM
+  SEND_WINDOW_START = 7  # 7 AM — earliest hour to send
+  SEND_WINDOW_END = 16   # 4 PM — latest hour to send
 
   def initialize
     @twilio_sid = ENV["TWILIO_ACCOUNT_SID"]
@@ -59,15 +59,15 @@ class MessagingService
   def within_sending_window?
     now = Time.current.in_time_zone(GUATEMALA_TZ)
     hour = now.hour
-    hour >= QUIET_HOURS_START && hour < QUIET_HOURS_END
+    hour >= SEND_WINDOW_START && hour < SEND_WINDOW_END
   end
 
   def next_sending_window
     now = Time.current.in_time_zone(GUATEMALA_TZ)
-    if now.hour < QUIET_HOURS_START
-      now.change(hour: QUIET_HOURS_START, min: 0)
+    if now.hour < SEND_WINDOW_START
+      now.change(hour: SEND_WINDOW_START, min: 0)
     else
-      (now + 1.day).change(hour: QUIET_HOURS_START, min: 0)
+      (now + 1.day).change(hour: SEND_WINDOW_START, min: 0)
     end
   end
 

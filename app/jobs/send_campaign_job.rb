@@ -23,5 +23,9 @@ class SendCampaignJob < ApplicationJob
       "#{created} messages created this run, " \
       "#{campaign.sent_count} total sent, #{campaign.failed_count} total failed"
     )
+  rescue StandardError => e
+    campaign&.update(status: "failed") if campaign&.persisted?
+    Rails.logger.error("[SendCampaignJob] Campaign ##{campaign_id} failed: #{e.message}")
+    raise
   end
 end
