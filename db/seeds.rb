@@ -12,16 +12,7 @@ end
 
 # Unsplash CDN photos — keyed by product slug.
 # These are public domain-equivalent photos. Fallback gracefully if unreachable.
-PRODUCT_PHOTOS = {
-  "empanada-de-pavo-navideno"      => "https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&h=600&fit=crop&q=80",
-  "empanada-de-manzana-con-canela" => "https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?w=800&h=600&fit=crop&q=80",
-  "empanada-de-pavo-con-arandanos" => "https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&h=600&fit=crop&q=80",
-  "empanada-de-camote-dulce"       => "https://images.unsplash.com/photo-1596797038530-2c107229654b?w=800&h=600&fit=crop&q=80",
-  "empanada-de-carne"              => "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=800&h=600&fit=crop&q=80",
-  "empanada-de-pollo"              => "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800&h=600&fit=crop&q=80",
-  "empanada-de-frijol-con-queso"   => "https://images.unsplash.com/photo-1481931098730-318b6f776db0?w=800&h=600&fit=crop&q=80",
-  "empanada-de-loroco"             => "https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=800&h=600&fit=crop&q=80"
-}.freeze
+PRODUCT_PHOTOS = {}.freeze
 
 # Clear existing data
 puts "Clearing existing data..."
@@ -65,92 +56,188 @@ tradicionales = Collection.create!(
   position: 3
 )
 
+semana_santa = Collection.create!(
+  name: 'Semana Santa',
+  description: 'Sabores especiales para la temporada de Semana Santa',
+  active: true,
+  position: 4
+)
+
 puts "✓ Created #{Collection.count} collections"
 
 # Create products
 puts "\nCreating products..."
 
-# Navidad products
+# --- Empanadas saladas (Tradicionales) ---
 Product.create!([
   {
-    name: 'Empanada de Pavo Navideño',
-    description: 'Empanada rellena de pavo tierno con especias navideñas tradicionales',
+    name: 'Empanada de Espinaca',
+    description: 'Empanada rellena de espinaca fresca con queso',
     price: 15.00,
     featured: true,
-    seasonal: true,
+    seasonal: false,
     active: true,
-    collection: navidad
+    collection: tradicionales
   },
   {
-    name: 'Empanada de Manzana con Canela',
-    description: 'Delicioso postre navideño con manzanas frescas y canela',
-    price: 12.00,
-    featured: false,
-    seasonal: true,
-    active: true,
-    collection: navidad
-  }
-])
-
-# Thanksgiving products
-Product.create!([
-  {
-    name: 'Empanada de Pavo con Arándanos',
-    description: 'Pavo jugoso con salsa de arándanos casera',
-    price: 14.00,
+    name: 'Empanada Argentina',
+    description: 'Empanada estilo argentino con relleno clásico de carne',
+    price: 15.00,
     featured: true,
-    seasonal: true,
+    seasonal: false,
     active: true,
-    collection: thanksgiving
+    collection: tradicionales
   },
   {
-    name: 'Empanada de Camote Dulce',
-    description: 'Camote dulce guatemalteco con especias',
-    price: 11.00,
+    name: 'Empanada de Chorizo',
+    description: 'Empanada rellena de chorizo artesanal',
+    price: 15.00,
     featured: false,
-    seasonal: true,
-    active: true,
-    collection: thanksgiving
-  }
-])
-
-# Traditional products
-Product.create!([
-  {
-    name: 'Empanada de Carne',
-    description: 'Clásica empanada guatemalteca de carne molida con papas y especias',
-    price: 10.00,
-    featured: true,
     seasonal: false,
     active: true,
     collection: tradicionales
   },
   {
     name: 'Empanada de Pollo',
-    description: 'Pollo desmenuzado con vegetales frescos',
-    price: 10.00,
+    description: 'Empanada rellena de pollo desmenuzado',
+    price: 15.00,
     featured: true,
     seasonal: false,
     active: true,
     collection: tradicionales
   },
   {
-    name: 'Empanada de Frijol con Queso',
-    description: 'Frijoles negros guatemaltecos con queso fresco',
-    price: 9.00,
+    name: 'Empanada de Carne con Verdura',
+    description: 'Empanada de carne molida con verduras frescas',
+    price: 15.00,
     featured: false,
     seasonal: false,
     active: true,
     collection: tradicionales
   },
   {
-    name: 'Empanada de Loroco',
-    description: 'Flor de loroco con queso, un sabor único de Guatemala',
-    price: 11.00,
+    name: 'Empanada de Vegetales',
+    description: 'Empanada rellena de vegetales frescos de temporada',
+    price: 15.00,
     featured: false,
     seasonal: false,
     active: true,
     collection: tradicionales
+  }
+])
+
+# --- Empanadas dulces (Tradicionales) ---
+Product.create!([
+  {
+    name: 'Empanada de Guayaba con Queso',
+    description: 'Empanada dulce rellena de guayaba con queso crema',
+    price: 15.00,
+    featured: true,
+    seasonal: false,
+    active: true,
+    collection: tradicionales
+  },
+  {
+    name: 'Empanada de Manzana Tradicional',
+    description: 'Empanada dulce de manzana con canela al estilo tradicional',
+    price: 15.00,
+    featured: false,
+    seasonal: false,
+    active: true,
+    collection: tradicionales
+  },
+  {
+    name: 'Empanada de Manzana con Berries',
+    description: 'Empanada dulce de manzana combinada con frutos rojos',
+    price: 15.00,
+    featured: false,
+    seasonal: false,
+    active: true,
+    collection: tradicionales
+  },
+  {
+    name: 'Empanada de Pera',
+    description: 'Empanada dulce rellena de pera caramelizada',
+    price: 15.00,
+    featured: false,
+    seasonal: false,
+    active: true,
+    collection: tradicionales
+  },
+  {
+    name: 'Empanada de Piña',
+    description: 'Empanada dulce rellena de piña fresca',
+    price: 15.00,
+    featured: false,
+    seasonal: false,
+    active: true,
+    collection: tradicionales
+  }
+])
+
+# --- Platos fuertes (Tradicionales) ---
+Product.create!([
+  {
+    name: 'Carpacho de Lomito',
+    description: 'Carpacho de lomito fino. Rinde para 8 personas',
+    price: 295.00,
+    featured: true,
+    seasonal: false,
+    active: true,
+    collection: tradicionales
+  },
+  {
+    name: 'Paella',
+    description: 'Paella preparada al momento. Q175 por porción, tamaño variable de 5 a 22 personas',
+    price: 175.00,
+    featured: true,
+    seasonal: false,
+    active: true,
+    collection: tradicionales
+  },
+  {
+    name: 'Lasaña',
+    description: 'Lasaña casera por porción',
+    price: 90.00,
+    featured: false,
+    seasonal: false,
+    active: true,
+    collection: tradicionales
+  }
+])
+
+# --- Navidad ---
+Product.create!([
+  {
+    name: 'Pavo Navideño',
+    description: 'Pavo navideño de 12 libras. Incluye dos acompañantes: puré de papa y ensalada',
+    price: 1190.00,
+    featured: true,
+    seasonal: true,
+    active: true,
+    collection: navidad
+  },
+  {
+    name: 'Pastel Navideño',
+    description: 'Pastel navideño tradicional',
+    price: 140.00,
+    featured: true,
+    seasonal: true,
+    active: true,
+    collection: navidad
+  }
+])
+
+# --- Semana Santa ---
+Product.create!([
+  {
+    name: 'Empanada de Atún',
+    description: 'Empanada rellena de atún, especial para Semana Santa',
+    price: 15.00,
+    featured: true,
+    seasonal: true,
+    active: true,
+    collection: semana_santa
   }
 ])
 
@@ -169,8 +256,8 @@ end
 puts "\nCreating sample contacts..."
 Contact.create!([
   {
-    first_name: 'María',
-    last_name: 'González',
+    first_name: 'Pepito (sample/ejemplo)',
+    last_name: 'De Los Palotes',
     phone_number: '+50212345001',
     preferred_channel: 'whatsapp',
     opt_in_status: true,
@@ -179,8 +266,8 @@ Contact.create!([
     tags: 'cliente-frecuente, navidad'
   },
   {
-    first_name: 'Juan',
-    last_name: 'Pérez',
+    first_name: 'Fulanita (sample/ejemplo)',
+    last_name: 'De Tal',
     phone_number: '+50212345002',
     preferred_channel: 'whatsapp',
     opt_in_status: true,
@@ -189,17 +276,17 @@ Contact.create!([
     tags: 'nuevo-cliente'
   },
   {
-    first_name: 'Ana',
-    last_name: 'Martínez',
+    first_name: 'Mengano (sample/ejemplo)',
+    last_name: 'Inventado',
     phone_number: '+50212345003',
     preferred_channel: 'sms',
     opt_in_status: true,
     opt_in_source: 'referido',
     opt_in_timestamp: 3.days.ago,
-    tags: 'tradicionales, loroco'
+    tags: 'tradicionales'
   },
   {
-    first_name: 'Carlos',
+    first_name: 'Zutanito (sample/ejemplo)',
     phone_number: '+50212345004',
     preferred_channel: 'whatsapp',
     opt_in_status: false,
