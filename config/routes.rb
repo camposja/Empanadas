@@ -22,8 +22,10 @@ Rails.application.routes.draw do
     resources :campaigns do
       member do
         post :send_campaign
+        patch :toggle_active
       end
     end
+    resources :messages, only: [ :index ]
   end
 
   # Twilio webhooks

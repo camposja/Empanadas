@@ -83,6 +83,11 @@
                 </td>
                 <td class="whitespace-nowrap px-5 py-4">
                   <div class="flex items-center justify-end gap-2">
+                    <%= button_to toggle_active_admin_campaign_path(campaign),
+                          method: :patch,
+                          class: "rounded-md bg-white px-2.5 py-1.5 text-xs font-medium shadow-sm ring-1 ring-inset transition-colors cursor-pointer #{campaign.active? ? 'text-yellow-700 ring-yellow-300 hover:bg-yellow-50' : 'text-green-700 ring-green-300 hover:bg-green-50'}" do %>
+                      <%= campaign.active? ? "Desactivar" : "Activar" %>
+                    <% end %>
                     <%= link_to "Ver", [:admin, campaign],
                           class: "rounded-md bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 transition-colors hover:bg-gray-50" %>
                     <%= link_to "Editar", edit_admin_campaign_path(campaign),

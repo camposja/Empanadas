@@ -5,7 +5,9 @@ class Admin::CampaignsController < Admin::BaseController
     @campaigns = Campaign.order(created_at: :desc)
   end
 
-  def show; end
+  def show
+    @recent_messages = @campaign.messages.includes(:contact).order(created_at: :desc).limit(25)
+  end
 
   def new
     @campaign = Campaign.new(status: "draft")
@@ -34,6 +36,13 @@ class Admin::CampaignsController < Admin::BaseController
   def destroy
     @campaign.destroy!
     redirect_to admin_campaigns_path, notice: "Campaña eliminada exitosamente.", status: :see_other
+  end
+
+  def toggle_active
+    @campaign = Campaign.find(params[:id])
+    @campaign.update!(active: !@campaign.active?)
+    label = @campaign.active? ? "activada" : "desactivada"
+    redirect_to admin_campaigns_path, notice: "Campaña #{label}.", status: :see_other
   end
 
   def send_campaign

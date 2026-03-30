@@ -1,0 +1,104 @@
+<% content_for :title, "Mensajes" %>
+
+<%
+  status_classes = {
+    "pending"   => "bg-gray-100 text-gray-700",
+    "queued"    => "bg-blue-100 text-blue-800",
+    "sent"      => "bg-green-100 text-green-800",
+    "delivered" => "bg-green-100 text-green-800",
+    "failed"    => "bg-red-100 text-red-800"
+  }
+  status_labels = {
+    "pending"   => "Pendiente",
+    "queued"    => "En cola",
+    "sent"      => "Enviado",
+    "delivered" => "Entregado",
+    "failed"    => "Fallido"
+  }
+%>
+
+<div>
+  <%# Header %>
+  <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Mensajes</h1>
+      <p class="mt-1 text-sm text-gray-500">
+        Historial de mensajes enviados (últimos 100)
+      </p>
+    </div>
+  </div>
+
+  <%# Filters %>
+  <div class="mb-6 flex flex-wrap gap-2">
+    <%= link_to "Todos", admin_messages_path,
+          class: "rounded-lg px-3 py-1.5 text-xs font-medium #{params[:status].blank? ? 'bg-primary-500 text-white' : 'bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50'} transition-colors" %>
+    <% %w[pending queued sent delivered failed].each do |s| %>
+      <%= link_to status_labels[s], admin_messages_path(status: s, campaign_id: params[:campaign_id]),
+            class: "rounded-lg px-3 py-1.5 text-xs font-medium #{params[:status] == s ? 'bg-primary-500 text-white' : 'bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50'} transition-colors" %>
+    <% end %>
+  </div>
+
+  <% if @messages.any? %>
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Contacto</th>
+              <th scope="col" class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Campaña</th>
+              <th scope="col" class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Canal</th>
+              <th scope="col" class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Estado</th>
+              <th scope="col" class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Mensaje</th>
+              <th scope="col" class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Fecha</th>
+              <th scope="col" class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Error</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 bg-white">
+            <% @messages.each do |message| %>
+              <tr class="transition-colors hover:bg-gray-50 <%= message.status == 'failed' ? 'bg-red-50/50' : '' %>">
+                <td class="whitespace-nowrap px-5 py-3">
+                  <p class="text-sm font-medium text-gray-900"><%= message.contact.full_name %></p>
+                  <p class="text-xs text-gray-500 font-mono"><%= message.contact.phone_number %></p>
+                </td>
+                <td class="whitespace-nowrap px-5 py-3">
+                  <%= link_to message.campaign.name, [ :admin, message.campaign ],
+                        class: "text-sm text-primary-600 hover:text-primary-700" %>
+                </td>
+                <td class="whitespace-nowrap px-5 py-3">
+                  <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium
+                    <%= message.channel == 'whatsapp' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800' %>">
+                    <%= message.channel.capitalize %>
+                  </span>
+                </td>
+                <td class="whitespace-nowrap px-5 py-3">
+                  <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium <%= status_classes[message.status] %>">
+                    <%= status_labels[message.status] || message.status %>
+                  </span>
+                </td>
+                <td class="px-5 py-3 max-w-xs">
+                  <p class="text-xs text-gray-600 line-clamp-2"><%= message.body %></p>
+                </td>
+                <td class="whitespace-nowrap px-5 py-3 text-xs text-gray-500">
+                  <%= message.created_at.strftime("%d/%m/%Y %H:%M") %>
+                </td>
+                <td class="px-5 py-3 max-w-xs">
+                  <% if message.error_text.present? %>
+                    <p class="text-xs text-red-600"><%= message.error_text %></p>
+                  <% else %>
+                    <span class="text-xs text-gray-400">—</span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% else %>
+    <div class="rounded-xl border-2 border-dashed border-gray-200 bg-white py-16 text-center">
+      <p class="mb-3 text-4xl">📨</p>
+      <h3 class="text-sm font-semibold text-gray-900">No hay mensajes</h3>
+      <p class="mt-1 text-sm text-gray-500">Los mensajes aparecerán aquí cuando se envíen campañas.</p>
+    </div>
+  <% end %>
+</div>

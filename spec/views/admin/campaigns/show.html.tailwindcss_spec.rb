@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe "admin/campaigns/show", type: :view do
   before(:each) do
     assign(:campaign, create(:campaign))
+    assign(:recent_messages, Message.none)
   end
 
   it "renders attributes in <p>" do
