@@ -24,27 +24,26 @@ class MessagingService
         status: "pending"
       )
 
-      # Queue the message for sending (respecting quiet hours)
       SendMessageJob.perform_later(message.id)
     end
   end
 
   def send_message(message)
-    # Check quiet hours
     unless within_sending_window?
       reschedule_for_next_window(message)
       return
     end
 
-    # Compliance checks
     unless message.contact.can_contact?
       message.mark_failed!("Contact cannot be messaged (opt-in or do-not-contact)")
       return
     end
 
-    # TODO: Implement actual Twilio API call here
-    # For now, just mark as sent (scaffolded)
-    simulate_send(message)
+    if twilio_configured?
+      send_via_twilio(message)
+    else
+      simulate_send(message)
+    end
   end
 
   def within_sending_window?
@@ -64,12 +63,62 @@ class MessagingService
 
   private
 
-  def simulate_send(message)
-    # This simulates a successful send. Replace with actual Twilio call.
-    message.mark_sent!("sim_#{SecureRandom.hex(8)}")
+  def twilio_configured?
+    @twilio_sid.present? && @twilio_auth_token.present?
+  end
+
+  def twilio_client
+    @twilio_client ||= Twilio::REST::Client.new(@twilio_sid, @twilio_auth_token)
+  end
+
+  def send_via_twilio(message)
+    from_number = twilio_from_number(message.channel)
+    to_number = twilio_to_number(message.contact.phone_number, message.channel)
+
+    twilio_message = twilio_client.messages.create(
+      from: from_number,
+      to: to_number,
+      body: message.body,
+      status_callback: twilio_status_callback_url
+    )
+
+    message.mark_sent!(twilio_message.sid)
     message.contact.update(last_contacted_at: Time.current)
 
-    # Simulate delivery after a delay
+    Rails.logger.info("[MessagingService] Sent #{message.channel} to #{message.contact.phone_number} — SID: #{twilio_message.sid}")
+  rescue Twilio::REST::TwilioError => e
+    message.mark_failed!("Twilio error: #{e.message}")
+    Rails.logger.error("[MessagingService] Twilio error for message ##{message.id}: #{e.message}")
+  rescue StandardError => e
+    message.mark_failed!("Error: #{e.message}")
+    Rails.logger.error("[MessagingService] Unexpected error for message ##{message.id}: #{e.message}")
+  end
+
+  def twilio_from_number(channel)
+    if channel == "whatsapp"
+      "whatsapp:#{@twilio_whatsapp_number}"
+    else
+      @twilio_sms_number
+    end
+  end
+
+  def twilio_to_number(phone_number, channel)
+    if channel == "whatsapp"
+      "whatsapp:#{phone_number}"
+    else
+      phone_number
+    end
+  end
+
+  def twilio_status_callback_url
+    ENV.fetch("TWILIO_STATUS_CALLBACK_URL", nil)
+  end
+
+  def simulate_send(message)
+    Rails.logger.info("[MessagingService] SIMULATED send for message ##{message.id} (Twilio not configured)")
+
+    message.mark_sent!("sim_#{SecureRandom.hex(8)}")
+    message.contact.update(last_contacted_at: Time.current)
     message.mark_delivered!
   rescue StandardError => e
     message.mark_failed!(e.message)

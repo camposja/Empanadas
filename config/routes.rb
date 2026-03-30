@@ -26,6 +26,11 @@ Rails.application.routes.draw do
     end
   end
 
+  # Twilio webhooks
+  namespace :webhooks do
+    post "twilio/status", to: "twilio#status"
+  end
+
   # SEO routes
   get "sitemap.xml", to: "sitemaps#index", defaults: { format: :xml }
 

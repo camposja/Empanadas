@@ -51,6 +51,9 @@ gem "pundit"
 # Environment variables
 gem "dotenv-rails"
 
+# Twilio for WhatsApp/SMS messaging
+gem "twilio-ruby", "~> 7.0"
+
 # Friendly IDs for SEO
 gem "friendly_id", "~> 5.5"
 
