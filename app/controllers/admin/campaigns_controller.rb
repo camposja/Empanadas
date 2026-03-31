@@ -1,5 +1,5 @@
 class Admin::CampaignsController < Admin::BaseController
-  before_action :set_campaign, only: %i[show edit update destroy]
+  before_action :set_campaign, only: %i[show edit update destroy toggle_active send_campaign]
 
   def index
     @campaigns = Campaign.order(created_at: :desc)
@@ -39,15 +39,12 @@ class Admin::CampaignsController < Admin::BaseController
   end
 
   def toggle_active
-    @campaign = Campaign.find(params[:id])
     @campaign.update!(active: !@campaign.active?)
     label = @campaign.active? ? "activada" : "desactivada"
     redirect_to admin_campaigns_path, notice: "Campaña #{label}.", status: :see_other
   end
 
   def send_campaign
-    @campaign = Campaign.find(params[:id])
-
     unless @campaign.ready_to_send?
       redirect_to [ :admin, @campaign ], alert: "La campaña no está lista para enviar."
       return

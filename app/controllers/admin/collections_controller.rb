@@ -2,7 +2,7 @@ class Admin::CollectionsController < Admin::BaseController
   before_action :set_collection, only: %i[show edit update destroy]
 
   def index
-    @collections = Collection.order(position: :asc, name: :asc)
+    @collections = Collection.ordered
   end
 
   def show

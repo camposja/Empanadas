@@ -14,7 +14,7 @@ class Message < ApplicationRecord
   scope :sent, -> { where(status: "sent") }
   scope :delivered, -> { where(status: "delivered") }
   scope :failed, -> { where(status: "failed") }
-  scope :recent, -> { order(created_at: :desc) }
+  scope :successfully_sent, -> { where(status: %w[sent delivered]) }
 
   # Methods
   def mark_sent!(provider_id = nil)

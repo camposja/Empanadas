@@ -13,9 +13,6 @@ class Campaign < ApplicationRecord
   validates :recurring_interval_days, numericality: { greater_than: 0 }, allow_nil: true
 
   # Scopes
-  scope :draft, -> { where(status: "draft") }
-  scope :scheduled, -> { where(status: "scheduled") }
-  scope :sent, -> { where(status: "sent") }
   scope :active, -> { where(active: true) }
   scope :recurring, -> { where(campaign_type: "recurring") }
   scope :due_for_send, -> {
@@ -50,7 +47,7 @@ class Campaign < ApplicationRecord
   end
 
   def ready_to_send?
-    %w[draft scheduled sent].include?(status) && active? && status != "sending"
+    %w[draft scheduled sent].include?(status) && active?
   end
 
   def recurring?

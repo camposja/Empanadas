@@ -2,7 +2,7 @@ class Admin::ContactsController < Admin::BaseController
   before_action :set_contact, only: %i[show edit update destroy]
 
   def index
-    @contacts = Contact.all.order(created_at: :desc)
+    @contacts = Contact.order(created_at: :desc)
   end
 
   def show; end
@@ -38,7 +38,7 @@ class Admin::ContactsController < Admin::BaseController
   def export
     respond_to do |format|
       format.csv do
-        send_data Contact.all.order(:created_at).to_csv,
+        send_data Contact.order(:created_at).to_csv,
                   filename: "contactos-#{Date.current}.csv",
                   type: "text/csv"
       end
