@@ -57,6 +57,11 @@ class Admin::ContactsController < Admin::BaseController
       return
     end
 
+    if file.size > 2.megabytes
+      redirect_to admin_contacts_path, alert: "El archivo es demasiado grande (máximo 2 MB)."
+      return
+    end
+
     require "csv"
     imported = 0
     skipped = 0

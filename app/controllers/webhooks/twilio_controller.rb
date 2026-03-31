@@ -59,7 +59,15 @@ class Webhooks::TwilioController < ApplicationController
   private
 
   def verify_twilio_signature
-    return if ENV["TWILIO_AUTH_TOKEN"].blank?
+    if ENV["TWILIO_AUTH_TOKEN"].blank?
+      # Fail closed in production — reject if token is not configured.
+      # In dev/test, allow through for local testing without Twilio.
+      if Rails.env.production?
+        Rails.logger.error("[TwilioWebhook] TWILIO_AUTH_TOKEN not set — rejecting request")
+        head :forbidden
+      end
+      return
+    end
 
     validator = Twilio::Security::RequestValidator.new(ENV["TWILIO_AUTH_TOKEN"])
     url = request.original_url

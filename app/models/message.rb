@@ -26,6 +26,6 @@ class Message < ApplicationRecord
   end
 
   def mark_failed!(error)
-    update!(status: "failed", error_text: error)
+    update!(status: "failed", error_text: error.to_s.truncate(500))
   end
 end
