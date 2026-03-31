@@ -40,7 +40,7 @@ class Admin::CollectionsController < Admin::BaseController
   private
 
   def set_collection
-    @collection = Collection.find(params[:id])
+    @collection = Collection.friendly.find(params[:id])
   end
 
   def collection_params
