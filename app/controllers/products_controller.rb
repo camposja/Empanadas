@@ -12,7 +12,5 @@ class ProductsController < ApplicationController
                                 .active
                                 .where.not(id: @product.id)
                                 .limit(4)
-    @whatsapp_number = ENV.fetch("WHATSAPP_NUMBER", "+50230016011")
-    @whatsapp_message = URI.encode_www_form_component(@product.whatsapp_message)
   end
 end

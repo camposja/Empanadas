@@ -43,7 +43,7 @@ class Admin::ProductsController < Admin::BaseController
   end
 
   def set_collections
-    @collections = Collection.order(position: :asc, name: :asc)
+    @collections = Collection.ordered
   end
 
   def product_params

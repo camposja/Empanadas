@@ -13,7 +13,7 @@ class SendCampaignJob < ApplicationJob
 
     campaign.update!(
       status: "sent",
-      sent_count: campaign.messages.where(status: %w[sent delivered]).count,
+      sent_count: campaign.messages.successfully_sent.count,
       failed_count: campaign.messages.failed.count,
       last_sent_at: Time.current
     )

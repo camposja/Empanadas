@@ -7,7 +7,7 @@ class Admin::DashboardController < Admin::BaseController
       total_collections: Collection.count,
       total_campaigns: Campaign.count,
       active_campaigns: Campaign.active.count,
-      total_messages_sent: Message.where(status: %w[sent delivered]).count,
+      total_messages_sent: Message.successfully_sent.count,
       total_messages_failed: Message.failed.count,
       recent_campaigns: Campaign.order(created_at: :desc).limit(5),
       recent_failed_messages: Message.failed.includes(:contact, :campaign).order(created_at: :desc).limit(5)
