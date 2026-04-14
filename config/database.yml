@@ -16,15 +16,17 @@ test:
 
 production:
   primary: &primary_production
-    adapter: postgresql
-    url: <%= ENV["DATABASE_URL"] %>
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    <<: *default
+    database: <%= ENV.fetch("DATABASE_PATH", "/data/production.sqlite3") %>
   cache:
     <<: *primary_production
+    database: <%= ENV.fetch("CACHE_DATABASE_PATH", "/data/production_cache.sqlite3") %>
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_production
+    database: <%= ENV.fetch("QUEUE_DATABASE_PATH", "/data/production_queue.sqlite3") %>
     migrations_paths: db/queue_migrate
   cable:
     <<: *primary_production
+    database: <%= ENV.fetch("CABLE_DATABASE_PATH", "/data/production_cable.sqlite3") %>
     migrations_paths: db/cable_migrate
